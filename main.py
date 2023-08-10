@@ -5,7 +5,7 @@ from sys import platform as _sys_platform
 import pygame
 import os
 
-path = os.path.abspath('Mars protaction file') + '/'
+path = ''
 
 clock = pygame.time.Clock()
 
@@ -34,7 +34,7 @@ bg0 = pygame.transform.scale(
 bg1 = pygame.transform.scale(
     pygame.image.load(path + 'images/galactic_warships_images/bg/space2.jpg').convert_alpha(), (w, h))
 
-little_size = (100 // w_difference, 100 // w_difference)
+little_size = (int(100 // w_difference), int(100 // w_difference))
 
 all_ships = [
     pygame.transform.scale(pygame.image.load(
@@ -82,7 +82,7 @@ players_ships = [
         path + 'images/galactic_warships_images/p_plain/p_plain9.png').convert_alpha(), little_size)
 ]
 
-big_size = (500 / w_difference, 500 / w_difference)
+big_size = (int(500 / w_difference), int(500 / w_difference))
 
 players_ships_menu = [
     pygame.transform.scale(pygame.image.load(
@@ -111,7 +111,7 @@ bad_ship = pygame.transform.scale(pygame.image.load(path + 'images/galactic_wars
                                   convert_alpha(), little_size)
 bad_ship_list = []
 
-bullet_size = (50 / w_difference, 17 / w_difference)
+bullet_size = (int(50 / w_difference), int(17 / w_difference))
 
 bullet = [
     [pygame.transform.scale(pygame.image.load(
@@ -164,13 +164,13 @@ bullet = [
          path + 'images/galactic_warships_images/bullets/bullet71.png').convert_alpha(), bullet_size)],
     [pygame.transform.scale(pygame.image.load(
         path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (30 / w_difference, 30 / w_difference)),
+                            (int(30 / w_difference), int(30 / w_difference))),
      pygame.transform.scale(pygame.image.load(
          path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (30 / w_difference, 30 / w_difference)),
+                            (int(30 / w_difference), int(30 / w_difference))),
      pygame.transform.scale(pygame.image.load(
          path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (30 / w_difference, 30 / w_difference))],
+                            (int(30 / w_difference), int(30 / w_difference)))],
     [pygame.transform.scale(pygame.image.load(
         path + 'images/galactic_warships_images/bullets/bullet91.png').convert_alpha(), bullet_size),
      pygame.transform.scale(pygame.image.load(
@@ -196,7 +196,7 @@ bad_ship_speed = 1
 
 big_planet = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/planets/planet_red_big.png').
-                                    convert_alpha(), (166 / w_difference, 1019 / w_difference))
+                                    convert_alpha(), (int(166 / w_difference), int(1019 / w_difference)))
 
 bad_ship_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(bad_ship_timer, 2000)
@@ -301,7 +301,7 @@ play_stop_y = 20 // w_difference
 
 play = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/play_button.png').convert_alpha(),
-                              (64 // w_difference, 64 // w_difference))
+                              (int(64 // w_difference), int(64 // w_difference)))
 play_rect = play.get_rect(topleft=(play_stop_x + 200 // w_difference, play_stop_y // w_difference))
 
 square_play = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -309,7 +309,7 @@ square_play.fill('yellow')
 
 stop_and_out = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/stop_button.png').convert_alpha(),
-                                      (64 // w_difference, 64 // w_difference))
+                                      (int(64 // w_difference), int(64 // w_difference)))
 stop_and_out_rect = stop_and_out.get_rect(topleft=(play_stop_x, play_stop_y))
 
 square_stop_and_out = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -317,7 +317,7 @@ square_stop_and_out.fill('yellow')
 
 stop = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/pause_button.png').convert_alpha(),
-                              (64 // w_difference, 64 // w_difference))
+                              (int(64 // w_difference), int(64 // w_difference)))
 stop_rect = stop.get_rect(topleft=(play_stop_x + 100 // w_difference, play_stop_y))
 
 square_stop = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -644,7 +644,7 @@ while running:
         screen.blit(bg1, (0, 0))
         box = pygame.transform.scale(
             pygame.image.load(path + 'images/galactic_warships_images/boxes/box.png').
-            convert_alpha(), (400 // w_difference, 400 // w_difference))
+            convert_alpha(), (int(400 // w_difference), int(400 // w_difference)))
         box_rect = box.get_rect(topleft=(50 // w_difference, 225 // w_difference))
         screen.blit(box, box_rect)
         screen.blit(square_out, (out_x, out_y + 10))
