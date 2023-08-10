@@ -1,23 +1,10 @@
 import time
 from random import *
-from os import environ
-from sys import platform as _sys_platform
 import pygame
-import os
 
 path = ''
 
 clock = pygame.time.Clock()
-
-
-def platform():
-    if 'ANDROID_ARGUMENT' in environ:
-        return 'android'
-    elif _sys_platform in ('linux', 'linux2', 'linux3'):
-        return 'linux'
-    elif _sys_platform in ('win32', 'cygwin'):
-        return 'win'
-
 
 pygame.init()
 
