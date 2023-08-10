@@ -1,14 +1,25 @@
+import time
 from random import *
 from os import environ
 from sys import platform as _sys_platform
 import pygame
+import os
+
+path = os.path.abspath('Mars protaction file') + '/'
 
 clock = pygame.time.Clock()
 
 
-pygame.init()
+def platform():
+    if 'ANDROID_ARGUMENT' in environ:
+        return 'android'
+    elif _sys_platform in ('linux', 'linux2', 'linux3'):
+        return 'linux'
+    elif _sys_platform in ('win32', 'cygwin'):
+        return 'win'
 
-path = 'C:/Users/VLAD/PycharmProjects/Mars protaction/'
+
+pygame.init()
 
 screen = pygame.display.set_mode(flags=pygame.FULLSCREEN)  # flags=pygame.NOFRAME
 pygame.display.set_caption('Mars protection')
@@ -177,11 +188,11 @@ bullets = []
 players_ships_x = 300 // w_difference
 players_ships_y = 360 // w_difference
 
-players_ships_speed = 20
+players_ships_speed = 2
 
-bullets_speed = 10
+bullets_speed = 0.5
 
-bad_ship_speed = 10
+bad_ship_speed = 1
 
 big_planet = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/planets/planet_red_big.png').
@@ -365,6 +376,12 @@ stop_or_play = 0
 
 up_True = 0
 down_True = 0
+
+start_time = time.time()
+time_int = 1
+counter = 0
+
+fps = ''
 
 running = True
 while running:
@@ -559,7 +576,7 @@ while running:
 
         for i in range(len(all_ships)):
             if p_list[i] == '0':
-                p_ship_rect = all_ships[i].get_rect(topleft=((20 + little_size[0] + 20) * i, 400))
+                p_ship_rect = all_ships[i].get_rect(topleft=((20 + little_size[0]) * i, 400))
                 screen.blit(all_ships[i], p_ship_rect)
             else:
                 p_ship_rect = players_ships[i].get_rect(topleft=((20 + little_size[0]) * i, 400))
@@ -587,7 +604,13 @@ while running:
         screen.blit(shop, shop_label_rect)
         screen.blit(square_management, (management_label_x, management_label_y + 10))
         screen.blit(management, management_label_rect)
-        points2 = label2.render(f'у тебя {points} очков', True,
+
+        if len(str(points)) >= 9:
+            your_points = f'{str(points)[:8]}...'
+        else:
+            your_points = points
+
+        points2 = label2.render(f'у тебя {your_points} очков', True,
                                 (247, 94, 59))
         screen.blit(points2, (450 // w_difference, 30 // w_difference))  # 1540, 802
 
@@ -680,6 +703,13 @@ while running:
         elif arrows_rect.collidepoint(mouse) and pygame.mouse.get_pressed()[0]:
             control = 1
             gameplay = 3
+    counter += 1
+    if (time.time() - start_time) > time_int:
+        fps = "FPS: " + str(int(counter / (time.time() - start_time)))
+        counter = 0
+        start_time = time.time()
+
+    screen.blit(font.render(fps, True, (180, 0, 0)), (0, 0))
 
     pygame.display.update()
 
@@ -699,5 +729,3 @@ while running:
         if gameplay == 0 and event.type == bullet_timer and stop_or_play == 0:
             bullets.append(bullet[plain][bullet_choice].get_rect(
                 topleft=(players_ships_x + little_size[0], players_ships_y + little_size[0] // 2 - 17 / 2)))
-
-    clock.tick(10)
