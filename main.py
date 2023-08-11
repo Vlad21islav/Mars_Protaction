@@ -1,10 +1,23 @@
 import time
 from random import *
+from os import environ
+from sys import platform as _sys_platform
 import pygame
+import os
 
-path = ''
+path = os.path.abspath('Mars protaction file') + '/'
 
 clock = pygame.time.Clock()
+
+
+def platform():
+    if 'ANDROID_ARGUMENT' in environ:
+        return 'android'
+    elif _sys_platform in ('linux', 'linux2', 'linux3'):
+        return 'linux'
+    elif _sys_platform in ('win32', 'cygwin'):
+        return 'win'
+
 
 pygame.init()
 
@@ -21,7 +34,7 @@ bg0 = pygame.transform.scale(
 bg1 = pygame.transform.scale(
     pygame.image.load(path + 'images/galactic_warships_images/bg/space2.jpg').convert_alpha(), (w, h))
 
-little_size = (int(w / 20), int(w / 15))
+little_size = (100 // w_difference, 100 // w_difference)
 
 all_ships = [
     pygame.transform.scale(pygame.image.load(
@@ -69,7 +82,7 @@ players_ships = [
         path + 'images/galactic_warships_images/p_plain/p_plain9.png').convert_alpha(), little_size)
 ]
 
-big_size = (int(w / 4), int(h / 2))
+big_size = (500 / w_difference, 500 / w_difference)
 
 players_ships_menu = [
     pygame.transform.scale(pygame.image.load(
@@ -98,7 +111,7 @@ bad_ship = pygame.transform.scale(pygame.image.load(path + 'images/galactic_wars
                                   convert_alpha(), little_size)
 bad_ship_list = []
 
-bullet_size = (int(w / 40), int(h / 50))
+bullet_size = (50 / w_difference, 17 / w_difference)
 
 bullet = [
     [pygame.transform.scale(pygame.image.load(
@@ -151,13 +164,13 @@ bullet = [
          path + 'images/galactic_warships_images/bullets/bullet71.png').convert_alpha(), bullet_size)],
     [pygame.transform.scale(pygame.image.load(
         path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (int(w / 50), int(h / 20))),
+                            (30 / w_difference, 30 / w_difference)),
      pygame.transform.scale(pygame.image.load(
          path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (int(w / 50), int(h / 20))),
+                            (30 / w_difference, 30 / w_difference)),
      pygame.transform.scale(pygame.image.load(
          path + 'images/galactic_warships_images/bullets/bullet81.png').convert_alpha(),
-                            (int(w / 50), int(h / 20)))],
+                            (30 / w_difference, 30 / w_difference))],
     [pygame.transform.scale(pygame.image.load(
         path + 'images/galactic_warships_images/bullets/bullet91.png').convert_alpha(), bullet_size),
      pygame.transform.scale(pygame.image.load(
@@ -172,8 +185,8 @@ bullet_choice_stop = False
 
 bullets = []
 
-players_ships_x = int(w / 5)
-players_ships_y = int(h / 2)
+players_ships_x = 300 // w_difference
+players_ships_y = 360 // w_difference
 
 players_ships_speed = 2
 
@@ -183,7 +196,7 @@ bad_ship_speed = 1
 
 big_planet = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/planets/planet_red_big.png').
-                                    convert_alpha(), (int(w / 8), int(h)))
+                                    convert_alpha(), (166 / w_difference, 1019 / w_difference))
 
 bad_ship_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(bad_ship_timer, 2000)
@@ -191,55 +204,84 @@ pygame.time.set_timer(bad_ship_timer, 2000)
 bullet_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(bullet_timer, 2000)
 
-label = pygame.font.Font(path + 'fonts/planet_font.ttf', int(h / 30))
-label2 = pygame.font.Font(path + 'fonts/planet_font.ttf', int(h / 30))
-font = pygame.font.Font(path + 'fonts/planet_font.ttf', int(h / 30))
+label = pygame.font.Font(path + 'fonts/planet_font.ttf', int(80 / w_difference))
+label2 = pygame.font.Font(path + 'fonts/planet_font.ttf', int(50 / w_difference))
+font = pygame.font.Font(path + 'fonts/planet_font.ttf', int(23 / w_difference))
 
-next_label = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/next.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-next_label_rect = next_label.get_rect(topleft=(int(0), int(h - h / 10)))
+next_label = label.render('дальше', True, 'black')
 
-done_label = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/play.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-done_label_rect = done_label.get_rect(topleft=(w - w / 5, h - h / 10))
+# 1540, 802
+next_label_x = 20 // w_difference
+next_label_y = h - 80 // w_difference - 20
+next_label_rect = next_label.get_rect(topleft=(next_label_x, next_label_y))
+next_label_rect2 = next_label.get_rect(topleft=(next_label_x + 1200, next_label_y))
 
-ship_label = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/plain.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-ship_label_rect = ship_label.get_rect(topleft=(0, h / 8))
+square_next = pygame.Surface((int(50 * len('дальше') // w_difference), 80 // w_difference))
+square_next.fill('yellow')
 
-shop = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/market.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-shop_label_rect = shop.get_rect(topleft=(0, h / 8 * 2))
+done_label = label.render('играть', True, 'black')
 
-management = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/control.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-management_label_rect = management.get_rect(topleft=(0, h / 8 * 3))
+# 1540, 802
+done_label_x = w - 20 - int(42 * len('играть')) // w_difference
+done_label_y = h - 20 - 80 // w_difference
+done_label_rect = done_label.get_rect(topleft=(done_label_x, done_label_y))
 
-out = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/back.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-out_rect = out.get_rect(topleft=(w - w / 5, 0))
+square_done = pygame.Surface((int(42 * len('играть')), 80 // w_difference))
+square_done.fill('yellow')
 
-label_up_down = pygame.font.Font(path + 'fonts/planet_font.ttf', int(h / 10))
-up_down_x = int(w / 20 * 17)
+ship_label = label.render('самолёты', True, 'black')
 
-control_label = pygame.font.Font(path + 'fonts/planet_font.ttf', int(h / 20))
-control_y = h / 3 * 2
+# 1540, 802
+ship_label_x = 20 // w_difference
+ship_label_y = 20 // w_difference
+ship_label_rect = ship_label.get_rect(topleft=(ship_label_x, ship_label_y))
 
-joystick = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/joistick.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-joystick_rect = joystick.get_rect(topleft=(0, control_y))
+square_ship = pygame.Surface((int(50 * len('самолёты') // w_difference), 80 // w_difference))
+square_ship.fill('yellow')
 
-arrows = pygame.transform.scale(pygame.image.load(
-    path + 'images/galactic_warships_images/buttons/arrows.jpg').
-                                    convert_alpha(), (int(w / 5), int(h / 10)))
-arrows_rect = arrows.get_rect(topleft=(w / 5 * 2, control_y))
+shop = label.render('магазин', True, 'black')
+# 1540, 802
+shop_label_x = 20 // w_difference
+shop_label_y = 120 // w_difference
+shop_label_rect = shop.get_rect(topleft=(shop_label_x, shop_label_y))
+square_shop = pygame.Surface((int(45 * len('магазин') // w_difference), 80 // w_difference))
+square_shop.fill('yellow')
+
+management = label.render('управление', True, 'black')
+# 1540, 802
+management_label_x = 20 // w_difference
+management_label_y = 220 // w_difference
+management_label_rect = management.get_rect(topleft=(management_label_x, management_label_y))
+square_management = pygame.Surface((int(45 * len('management') // w_difference), 80 // w_difference))
+square_management.fill('yellow')
+
+out = label.render('назад', True, 'black')
+
+# 1540, 802
+out_x = w - 270 // w_difference
+out_y = 20 // w_difference
+out_rect = out.get_rect(topleft=(out_x, out_y))
+
+square_out = pygame.Surface((int(50 * len('назад')), 80 // w_difference))
+square_out.fill('yellow')
+
+label_up_down = pygame.font.Font(path + 'fonts/planet_font.ttf', int(80 // w_difference))
+up_down_x = 1300 // w_difference
+
+control_label = pygame.font.Font(path + 'fonts/planet_font.ttf', int(80 // w_difference))
+control_y = 500 // w_difference
+
+joystick = control_label.render('джойстик', True, 'black')
+joystick_rect = joystick.get_rect(topleft=(20, control_y))
+
+square_joystick = pygame.Surface((int(47 * len('джойстик') // w_difference), 80 // w_difference))
+square_joystick.fill('yellow')
+
+arrows = control_label.render('стрелки', True, 'black')
+arrows_rect = arrows.get_rect(topleft=(470, control_y))
+
+square_arrows = pygame.Surface((int(45 * len('стрелки') // w_difference), 80 // w_difference))
+square_arrows.fill('yellow')
 
 control = 1
 
@@ -259,7 +301,7 @@ play_stop_y = 20 // w_difference
 
 play = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/play_button.png').convert_alpha(),
-                              (int(64 // w_difference), int(64 // w_difference)))
+                              (64 // w_difference, 64 // w_difference))
 play_rect = play.get_rect(topleft=(play_stop_x + 200 // w_difference, play_stop_y // w_difference))
 
 square_play = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -267,7 +309,7 @@ square_play.fill('yellow')
 
 stop_and_out = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/stop_button.png').convert_alpha(),
-                                      (int(64 // w_difference), int(64 // w_difference)))
+                                      (64 // w_difference, 64 // w_difference))
 stop_and_out_rect = stop_and_out.get_rect(topleft=(play_stop_x, play_stop_y))
 
 square_stop_and_out = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -275,7 +317,7 @@ square_stop_and_out.fill('yellow')
 
 stop = pygame.transform.scale(pygame.image.load(
     path + 'images/galactic_warships_images/buttons/pause_button.png').convert_alpha(),
-                              (int(64 // w_difference), int(64 // w_difference)))
+                              (64 // w_difference, 64 // w_difference))
 stop_rect = stop.get_rect(topleft=(play_stop_x + 100 // w_difference, play_stop_y))
 
 square_stop = pygame.Surface((64 // w_difference, 64 // w_difference))
@@ -343,6 +385,7 @@ fps = ''
 
 running = True
 while running:
+
     screen.fill('black')
 
     p_listTrue = ''
@@ -407,9 +450,9 @@ while running:
             mouse = pygame.mouse.get_pos()
             keys = pygame.key.get_pressed()
             if play_rect.collidepoint(mouse) and pygame.mouse.get_pressed()[0]:
-                players_ships_speed = 20
-                bullets_speed = 10
-                bad_ship_speed = 10
+                players_ships_speed = 2
+                bullets_speed = 0.5
+                bad_ship_speed = 1
                 bullet_choice_stop = False
                 stop_or_play = 0
 
@@ -517,6 +560,7 @@ while running:
         screen.blit(bg1, (0, 0))
         screen.blit(lose_label1, (20, 50))
         screen.blit(lose_label2, (20, 50 + 80))
+        screen.blit(square_next, (next_label_x, next_label_y + 10))
         screen.blit(next_label, next_label_rect)
 
         mouse = pygame.mouse.get_pos()
@@ -527,6 +571,7 @@ while running:
 
     elif gameplay == 2:
         screen.blit(bg1, (0, 0))
+        screen.blit(square_out, (out_x, out_y + 10))
         screen.blit(out, out_rect)
 
         for i in range(len(all_ships)):
@@ -549,11 +594,15 @@ while running:
 
     elif gameplay == 3:
         screen.blit(bg1, (0, 0))
+        screen.blit(square_done, (done_label_x, done_label_y + 10))
+        screen.blit(square_ship, (ship_label_x, ship_label_y + 10))
         players_ships_menu_rect = players_ships_menu[plain].get_rect(topleft=(500 // w_difference, 200 // w_difference))
         screen.blit(players_ships_menu[plain], players_ships_menu_rect)
         screen.blit(done_label, done_label_rect)
         screen.blit(ship_label, ship_label_rect)
+        screen.blit(square_shop, (shop_label_x, shop_label_y + 10))
         screen.blit(shop, shop_label_rect)
+        screen.blit(square_management, (management_label_x, management_label_y + 10))
         screen.blit(management, management_label_rect)
 
         if len(str(points)) >= 9:
@@ -595,9 +644,10 @@ while running:
         screen.blit(bg1, (0, 0))
         box = pygame.transform.scale(
             pygame.image.load(path + 'images/galactic_warships_images/boxes/box.png').
-            convert_alpha(), (int(400 // w_difference), int(400 // w_difference)))
+            convert_alpha(), (400 // w_difference, 400 // w_difference))
         box_rect = box.get_rect(topleft=(50 // w_difference, 225 // w_difference))
         screen.blit(box, box_rect)
+        screen.blit(square_out, (out_x, out_y + 10))
         screen.blit(out, out_rect)
         box_cost = label2.render(f'бокс стоит {cost} очков', True,
                                  (247, 94, 59))
@@ -624,17 +674,22 @@ while running:
     elif gameplay == 5:
         screen.blit(bg1, (0, 0))
         screen.blit(players_ships_menu[ind], (500, 200))
-        screen.blit(next_label, next_label_rect)
+        screen.blit(square_next, (next_label_x + 1200, next_label_y + 10))
+        screen.blit(next_label, (next_label_x + 1200, next_label_y))
 
         mouse = pygame.mouse.get_pos()
         keys = pygame.key.get_pressed()
-        if next_label_rect.collidepoint(mouse) and pygame.mouse.get_pressed()[0] or keys[pygame.K_SPACE]:
+        if next_label_rect2.collidepoint(mouse) and pygame.mouse.get_pressed()[0] or keys[pygame.K_SPACE]:
             gameplay = 4
 
     elif gameplay == 6:
         screen.blit(bg1, (0, 0))
+
+        screen.blit(square_joystick, (20, control_y + 10))
         screen.blit(joystick, joystick_rect)
+        screen.blit(square_arrows, (470, control_y + 10))
         screen.blit(arrows, arrows_rect)
+        screen.blit(square_out, (out_x, out_y + 10))
         screen.blit(out, out_rect)
 
         mouse = pygame.mouse.get_pos()
