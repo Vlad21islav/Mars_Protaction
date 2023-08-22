@@ -342,7 +342,7 @@ gameplay = 3
 
 plain = 0
 
-f = open(path + 'plains', 'r')
+f = open(path + 'plains.TXT', 'r')
 file_contents = f.read()
 p = str(file_contents)
 f.close()
@@ -354,7 +354,7 @@ for some in range(len(p)):
 
 points = 0
 
-f = open(path + 'points', 'r')
+f = open(path + 'points.TXT', 'r')
 file_contents = f.read()
 points += int(file_contents)
 f.close()
@@ -716,9 +716,9 @@ while running:
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
-            with open(path + 'points', "w") as f:
+            with open(path + 'points.TXT', "w") as f:
                 f.write(str(points))
-            with open(path + 'plains', "w") as f:
+            with open(path + 'plains.TXT', "w") as f:
                 f.write(''.join(p_list))
             running = False
             pygame.quit()
