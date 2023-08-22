@@ -5,7 +5,7 @@ from sys import platform as _sys_platform
 import pygame
 import os
 
-path = os.path.abspath('Mars protaction file') + '/'
+path = ''
 
 clock = pygame.time.Clock()
 
