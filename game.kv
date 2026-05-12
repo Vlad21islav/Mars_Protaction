@@ -1,0 +1,53 @@
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+
+ScreenManager:
+    transition: NoTransition()
+    MenuScreen:
+        name: "menu"
+    StoreScreen:
+        name: "store"
+    ShipsScreen:
+        name: "ships"
+    GameScreen:
+        name: "game"
+
+
+<MenuScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: "images/bg/space2.jpg"
+            pos: self.pos
+            size: self.size
+
+
+<StoreScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: "images/bg/space2.jpg"
+            pos: self.pos
+            size: self.size
+
+
+<ShipsScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: "images/bg/space2.jpg"
+            pos: self.pos
+            size: self.size
+
+
+<GameScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: "images/bg/space.jpg"
+            pos: self.pos
+            size: self.size
