@@ -52,7 +52,7 @@ class GameScreen(Screen):
     def update_positions(self):
         self.ship_y = 50
         bad_planes_count = 5
-        self.bad_planes = [[500 // bad_planes_count * i, random.randint(0, 100)] for i in range(0, bad_planes_count)]
+        self.bad_planes = [[500 // bad_planes_count * i, random.randint(10, 95)] for i in range(0, bad_planes_count)]
         self.bullet_queue = 0
         bullets_count = 10
         self.bullets = [[0, -30] for i in range(0, bullets_count)]
@@ -61,8 +61,8 @@ class GameScreen(Screen):
 
     def cycle(self, dt):
         if self.game_started:
-            if time.time() - self.last_spawn_time > 3:
-                self.bullets[self.bullet_queue] = [0, self.ship_y]
+            if time.time() - self.last_spawn_time > 2:
+                self.bullets[self.bullet_queue] = [0, self.ship_y + 8]
                 if self.bullet_queue == len(self.bullets) - 1:
                     self.bullet_queue = 0
                 else:
@@ -73,18 +73,18 @@ class GameScreen(Screen):
             for _ in range(int((time.time() - self.last_move_time) / 0.01)):
                 for bullet in self.bullets:
                     if bullet != [0, -30]:
-                        bullet[0] += 1
+                        bullet[0] += 2
                 for pos in self.bad_planes:
                     if pos[0] > 1000:
                         pos[0] = 500
                         self.game_started = False
                         self.manager.current = 'menu'
-                    pos[0] += 1
+                    pos[0] += 0.5
                 for bullet_pos in self.bullets:
                     for ship_pos in self.bad_planes:
                         if self.check_collision(ship_pos, bullet_pos):
                             ship_pos[0] = 500
-                            ship_pos[1] = random.randint(0, 100)
+                            ship_pos[1] = random.randint(10, 95)
                             bullet_pos[0] = 0
                             bullet_pos[1] = -30
                             game_data['points'] += 1
@@ -95,11 +95,11 @@ class GameScreen(Screen):
                 self.update_bullets()
 
 
-    def check_collision(self, ship_pos, bullet_pos):
+    def check_collision(self, ship_pos: tuple[int], bullet_pos: tuple[int]) -> bool:
         self.update_ship_settings()
         self.update_bullets_settings()
-        bullet_pos = (bullet_pos[0] + self.ship_padding[0] + ((Window.width - self.ship_size[0] - self.ship_padding[0]) / 1000 * bullet_pos[0]), Window.height / 100 * bullet_pos[1])
-        ship_pos = (2 * Window.width -  2 * Window.width / 1000 * ship_pos[0], Window.height - Window.height / 100 * ship_pos[1])
+        bullet_pos = self.calculate_bullet_pos(bullet_pos)
+        ship_pos = self.calculate_bad_ship_pos(ship_pos)
         if (abs((ship_pos[1] + self.bad_ship_size[1] // 2) - (bullet_pos[1] + self.bullet_size[1] // 2)) <= self.bad_ship_size[1] // 2 + self.bullet_size[1] // 2) and \
             (bullet_pos[0] >= ship_pos[0]):
             return True
@@ -173,6 +173,9 @@ class GameScreen(Screen):
     def update_bad_ships_settings(self):
         self.bad_ship_size = (Window.width / 10, Window.height / 10)
 
+    def calculate_bad_ship_pos(self, pos: tuple[int]) -> tuple[int]:
+        return (2 * Window.width -  2 * Window.width / 1000 * pos[0], Window.height - Window.height / 100 * pos[1])
+
     def blit_bad_ships(self):
         self.update_bad_ships_settings()
         if hasattr(self, "bad_ship_layout"):
@@ -185,7 +188,7 @@ class GameScreen(Screen):
                 texture = tex,
                 size_hint = (None, None),
                 size = self.bad_ship_size,
-                pos = (2 * Window.width -  2 * Window.width / 1000 * ship[0], Window.height - Window.height / 100 * ship[1]),
+                pos = self.calculate_bad_ship_pos(ship),
                 allow_stretch = True,
                 keep_ratio = False
             )
@@ -204,31 +207,34 @@ class GameScreen(Screen):
     def update_bullets_settings(self):
         self.bullet_size = (Window.width / 25, Window.height / 25)
 
+    def calculate_bullet_pos(self, pos: tuple[int]) -> tuple[int]:
+        return (self.ship_padding[0] + ((Window.width - self.ship_size[0] - self.ship_padding[0]) / 1000 * pos[0]), Window.height / 100 * pos[1])
+
     def blit_bullets(self):
         self.update_bullets_settings()
         if hasattr(self, "bullet_layout"):
             self.remove_widget(self.bullet_layout)
         layout = FloatLayout()
-        for ship in self.bullets:
+        for bullet in self.bullets:
             tex = set_texture(path + f"images/bullets/bullet{game_data['selected_ship']}.png")
 
-            bullet = Image(
+            bullet_image = Image(
                 texture = tex,
                 size_hint = (None, None),
                 size = self.bullet_size,
-                pos = (self.ship_padding[0] + ((Window.width - self.ship_size[0] - self.ship_padding[0]) / 1000 * ship[0]), Window.height / 100 * ship[1]),
+                pos = self.calculate_bullet_pos(bullet),
                 allow_stretch = True,
                 keep_ratio = False
             )
 
-            layout.add_widget(bullet)
+            layout.add_widget(bullet_image)
         self.add_widget(layout)
         self.bullet_layout = layout
 
     def update_bullets(self):
         self.update_bullets_settings()
         if hasattr(self, "bullet_layout"):
-            for i, ship in enumerate(self.bullet_layout.children):
-                ship.texture = set_texture(path + f"images/bullets/bullet{game_data['selected_ship']}.png")
-                ship.size = self.bullet_size
-                ship.pos = (self.ship_padding[0] + ((Window.width - self.ship_size[0] - self.ship_padding[0]) / 1000 * self.bullets[len(self.bullets) - i - 1][0]), Window.height / 100 * self.bullets[len(self.bullets) - i - 1][1])
+            for i, bullet in enumerate(self.bullet_layout.children):
+                bullet.texture = set_texture(path + f"images/bullets/bullet{game_data['selected_ship']}.png")
+                bullet.size = self.bullet_size
+                bullet.pos = (self.ship_padding[0] + ((Window.width - self.ship_size[0] - self.ship_padding[0]) / 1000 * self.bullets[len(self.bullets) - i - 1][0]), Window.height / 100 * self.bullets[len(self.bullets) - i - 1][1])
