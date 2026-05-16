@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.utils import platform
+from kivy.properties import StringProperty
 
 from functions import path
 
@@ -16,6 +17,7 @@ if platform == 'win' or platform == 'linux' or platform == 'macosx':
 
 
 class GameApp(App):
+    path = StringProperty(path)
     def build(self):
         return Builder.load_file(path + 'game.kv')
 

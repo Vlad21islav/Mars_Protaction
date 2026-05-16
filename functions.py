@@ -1,27 +1,29 @@
 import configparser
 import os
 import random
+import sys
 
 from kivy.core.image import Image as CoreImage
 from kivy.uix.widget import Widget
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.core.window import Window
 from kivy.uix.image import Image
+from kivy.utils import platform
 
 def update_config():
     """Возвращает конфиг из файла или создаёт его, если он не существует"""
     config = configparser.ConfigParser()
 
-    if not os.path.exists('config.ini'):
+    if not os.path.exists(config_path + 'config.ini'):
         config['player'] = {
             'opened_planes': '1000000000',
             'points': '0',
             'chosen_ship': '0'
         }
-        with open('config.ini', 'w') as f:
+        with open(config_path + 'config.ini', 'w') as f:
             config.write(f)
     else:
-        config.read('config.ini')
+        config.read(config_path + 'config.ini')
 
     return config
 
@@ -31,7 +33,7 @@ def change_config(config, game_data):
     config.set('player', 'points', str(game_data['points']))
     config.set('player', 'chosen_ship', str(game_data['selected_ship']))
     
-    with open('config.ini', 'w') as f:
+    with open(config_path + 'config.ini', 'w') as f:
         config.write(f)
 
 def set_texture(image_path):
@@ -40,6 +42,17 @@ def set_texture(image_path):
     button_texture.min_filter = 'nearest'
     button_texture.mag_filter = 'nearest'
     return button_texture
+
+def get_config_dir():
+    if hasattr(sys, '_MEIPASS'):
+        save_dir = os.path.join(os.environ['APPDATA'], 'MarsProtection')
+    else:
+        save_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    
+    return save_dir
 
 
 class ScoreDisplay(Widget):
@@ -64,12 +77,12 @@ class ScoreDisplay(Widget):
     def load_number_textures(self):
         """Загрузка всех текстур цифр один раз"""
         for i in range(10):
-            self.number_textures[str(i)] = set_texture(f"images/numbers/{i}.png")
+            self.number_textures[str(i)] = set_texture(path + f"images/numbers/{i}.png")
     
     def load_fire_textures(self):
         """Загрузка текстур огня"""
         for i in range(2):
-            tex = set_texture(f"images/numbers/fire{i + 1}.png")
+            tex = set_texture(path + f"images/numbers/fire{i + 1}.png")
             self.fire_textures.append(tex)
     
     def update_display(self, score=None):
@@ -164,8 +177,12 @@ class DrawImageButton(Widget):
             self.image_layout.pos = pos
 
 
-path = ''
-# path = '_internal/'
+if platform == 'win':
+    path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__))).replace("\\", "/") + "/"
+    config_path = get_config_dir().replace("\\", "/") + "/"
+else:
+    path = ''
+    config_path = ''
 
 config = update_config()
 game_data = {
